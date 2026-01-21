@@ -28,5 +28,4 @@ jobs:
           context: .
           push: true
           # Abaixo, substitua 'seu-usuario-docker' pelo seu usuário real
-          tags: ${{ secrets.shorlyz }}/unyleya_projeto:latest
-
+          tags: shorlyz/unyleya_projeto_cicd_sharles_sa:latest
