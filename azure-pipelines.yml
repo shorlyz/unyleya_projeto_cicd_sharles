@@ -8,7 +8,7 @@ steps:
 - task: Docker@2
   inputs:
     containerRegistry: 'Docker Hub Connection' # Criar service connection antes
-    repository: 'seu-dockerhub-user/mobead-app'
+    repository: 'shorlyz/unyleya_projeto_cicd_sharles_sa'
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
     tags: 'latest'
