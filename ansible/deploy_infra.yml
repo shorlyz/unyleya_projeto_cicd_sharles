@@ -1,23 +1,31 @@
-- name: Provisionamento de Infraestrutura MobEAD
+---
+- name: Provision Azure App Service for .NET container
   hosts: localhost
+  connection: local
   tasks:
-    - name: Criar Grupo de Recursos Azure
+    - name: Create resource group
       azure_rm_resourcegroup:
-        name: rg-unyleya-final
+        name: rg-mobead
         location: eastus
 
-    - name: Criar Plano de Serviço (Windows para Container)
+    - name: Create App Service Plan
       azure_rm_appserviceplan:
-        resource_group: rg-unyleya-final
-        name: plan-mobead-windows
-        sku: P1v2
+        resource_group: rg-mobead
+        name: asp-mobead
+        location: eastus
+        sku: P1V2
         is_linux: false
 
-    - name: Criar Web App e Configurar Docker
+    - name: Create Windows App Service
       azure_rm_webapp:
-        resource_group: rg-unyleya-final
-        name: app-mobead-final-01
-        plan: plan-mobead-windows
+        resource_group: rg-mobead
+        name: app-mobead-nome
+        plan: asp-mobead
+        app_settings:
+          WEBSITES_ENABLE_APP_SERVICE_STORAGE: false
+        frameworks:
+          - name: "default"
+            version: ""
         container_settings:
-          name: "shorlyz/unyleya-projeto"
-          tag: "latest"
+          name: shorlyz/unyleya_projeto_cicd_sharles_sa/:latest
+          registry_url: https://index.docker.io
