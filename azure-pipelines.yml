@@ -8,5 +8,5 @@ steps:
 - script: |
     docker build -t shorlyz/unyleya_projeto_cicd_sharles_sa:latest .
     docker login -u $(DOCKER_USER) -p $(DOCKER_PASSWORD)
-    docker push sshorlyz/unyleya_projeto_cicd_sharles_sa:latest
+    docker push shorlyz/unyleya_projeto_cicd_sharles_sa:latest
   displayName: 'Build and Push Docker Image'
