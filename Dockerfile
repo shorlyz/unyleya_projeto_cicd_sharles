@@ -1,4 +1,4 @@
-# TESTE DE FUNCIPNAMENTO DE PIPELINE -  CI/CD - Indicando imagem base alteração de pipeline para windows latest
+# TESTE DE FuNCIONAMENTO DE PIPELINE -  CI/CD - Indicando imagem base alteração de pipeline para windows latest
 
 # Use a imagem oficial da Microsoft para ASP.NET no Windows
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-nanoserver-1809
