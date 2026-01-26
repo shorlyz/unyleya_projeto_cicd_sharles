@@ -1,35 +1,50 @@
-name: Unyleya Unidade 4 - CI/CD Ansible
+name: Unyleya Unidade 4 - CI/CD com Docker e Ansible
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  # Correspondente ao item 1 (Build Pipeline) no diagrama
   CI_Build_Docker:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build e Push para Docker Hub (Item 4 do diagrama)
-        run: |
-          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
-          docker build -t ${{ secrets.DOCKER_USER }}/unyleya_projeto_cicd_sharles_sa/:latest .
-          docker push ${{ secrets.DOCKER_USER }}/unyleya_projeto_cicd_sharles_sa/:latest
 
-  # Correspondente ao item 3 (Release Pipeline) no diagrama
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Login no Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+
+      - name: Build e Push da imagem Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USER }}/unyleya_projeto_cicd_sharles_sa:latest
+
   CD_Deploy_Ansible:
     needs: CI_Build_Docker
     runs-on: ubuntu-latest
-    environment: Production  # Gate de aprovação por e-mail
+    environment: Production
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Instalar Dependências Azure/Ansible
-        run: pip install ansible[azure] && ansible-galaxy collection install azure.azcollection
-      
-      - name: Executar Playbook (Item 5 do diagrama)
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar Ansible e dependências Azure
+        run: |
+          pip install ansible[azure]
+          ansible-galaxy collection install azure.azcollection
+
+      - name: Executar Playbook Ansible
         env:
           AZURE_CLIENT_ID: ${{ secrets.AZ_CLIENT_ID }}
           AZURE_SECRET: ${{ secrets.AZ_SECRET }}
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZ_SUB_ID }}
           AZURE_TENANT: ${{ secrets.AZ_TENANT_ID }}
-        run: ansible-playbook ansible/deploy_infra.yml
+        run: |
+          ansible-playbook deploy.yml
